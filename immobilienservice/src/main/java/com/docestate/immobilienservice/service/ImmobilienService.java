@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import com.docestate.immobilienservice.exceptions.EntityAlreadyExistsException;
 import com.docestate.immobilienservice.exceptions.EntityNotFoundException;
 import com.docestate.immobilienservice.model.Immobilie;
+import com.docestate.immobilienservice.repositories.ImmobilienRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ImmobilienService {
+
+    @Autowired
+    private ImmobilienRepository immobilienRepository;
 
     private static List<Immobilie> immobilien;
     private static final AtomicInteger counter = new AtomicInteger();

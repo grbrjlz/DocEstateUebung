@@ -1,16 +1,28 @@
 package com.docestate.immobilienservice.model;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Immobilien Model Klasse
  */
+
+@Entity
+@Table(name= "immobilien")
 public class Immobilie {
+    
     private int id;
-    @NotBlank
+    @NotNull
+    @Column(name="bezeichnung")
     private String bezeichnung;
-    @NotBlank
+    @NotNull
+    @Column(name="addresse")
     private String addresse;
+    @Column(name="flaeche")
     private int flaeche;
 
     
@@ -23,6 +35,10 @@ public class Immobilie {
         this.flaeche = flaeche;
     }
 
+    @Id
+    @GeneratedValue
+    @NotNull
+    @Column(name="id", unique = true)
     public int getId() {
         return id;
     }
