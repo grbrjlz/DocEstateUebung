@@ -1,15 +1,10 @@
 package com.docestate.immobilienservice.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
+import javax.persistence.EntityNotFoundException;
 import com.docestate.immobilienservice.exceptions.EntityAlreadyExistsException;
-import com.docestate.immobilienservice.exceptions.EntityNotFoundException;
 import com.docestate.immobilienservice.model.Immobilie;
 import com.docestate.immobilienservice.repositories.ImmobilienRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,32 +17,13 @@ public class ImmobilienService {
     @Autowired
     private ImmobilienRepository immobilienRepository;
 
-    private static List<Immobilie> immobilien;
-    private static final AtomicInteger counter = new AtomicInteger();
-
-
-    public List<Immobilie> getImmobilien() {
-        initImmobilien();
-
-        return immobilien;
-    }
-  
     /**
-     * Liste von Immobilien initialisieren (Persistenz v1)
+     * holt alle Eintrage aus der Datenbank und liefert als Liste von Immobilien zurueck
+     * @return Liste von allen Eintraegen aus der Datenbank
      */
-    private void initImmobilien() {
-        if (immobilien == null) {
-            Immobilie i = new Immobilie();
-            i.setId(counter.getAndIncrement());
-            i.setBezeichnung("firmensitz");
-            i.setAddresse("beispielstrasse");
-            i.setFlaeche(150);
-
-            immobilien = new ArrayList<>();
-            immobilien.add(i);
-        }
+    public List<Immobilie> getImmobilien() {
+        return immobilienRepository.findAll();
     }
-
 
     /**
      * sucht mit der uebergebenen id die immobilie aus der Liste
@@ -55,9 +31,7 @@ public class ImmobilienService {
      * @return falls Immobilie mit gesuchter id existiert Immobilienobjekt zurueck sonst EntityNotFoundException
      */
     public Immobilie getImmobilieById(int id) {
-        return immobilien.stream().filter(immobilie -> immobilie.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException(String.format("Immobilie nicht gefunden: id = %d", id)));
+        return immobilienRepository.findById(id).get();
     }
 
     /**
@@ -66,13 +40,14 @@ public class ImmobilienService {
      * @return gibt hinzugefuegtes Objekt zurueck falls noch nicht vorhanden, sonst EntityAlreadyExistsException
      */
     public Immobilie addImmobilie(Immobilie immobilie) {
-
-        checkImmobilie(immobilie );
-
-        immobilie.setId(counter.getAndIncrement());
-        immobilien.add(immobilie);
-
-        return immobilie;
+        try {
+            checkImmobilie(immobilie);
+            immobilienRepository.save(immobilie);
+            return immobilie;
+        } catch (EntityAlreadyExistsException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     /**
@@ -80,9 +55,11 @@ public class ImmobilienService {
      * @param id id der Immobilie die geloescht werden soll
      */
     public void deleteImmobilie(int id) {
-        immobilien = immobilien.stream()
-            .filter(x -> x.getId() != id)
-            .collect(Collectors.toList());
+        if(immobilienRepository.findById(id).isPresent()) {
+            immobilienRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException(String.format("Immobilie mit gesuchter id %d nicht gefuden",id));
+        }
     }
 
     /**
@@ -90,6 +67,7 @@ public class ImmobilienService {
      * @param immobilie
      */
     private void checkImmobilie(Immobilie immobilie) {
+        List<Immobilie> immobilien = immobilienRepository.findAll();
         immobilien.stream()
             .filter(x -> x.getBezeichnung().equals(immobilie.getBezeichnung()))
             .filter(x -> x.getAddresse().equals(immobilie.getAddresse()))

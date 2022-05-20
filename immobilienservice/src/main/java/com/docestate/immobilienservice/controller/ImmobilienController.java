@@ -2,12 +2,11 @@ package com.docestate.immobilienservice.controller;
 
 import java.util.List;
 import javax.validation.Valid;
-
 import com.docestate.immobilienservice.model.Immobilie;
 import com.docestate.immobilienservice.service.ImmobilienService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +35,6 @@ public class ImmobilienController {
     @GetMapping
     public ResponseEntity<List<Immobilie>> getImmobilien() {
         List<Immobilie> immobilien = immobilienService.getImmobilien();
-
         return new ResponseEntity<>(immobilien, HttpStatus.OK);
     }
 
@@ -48,7 +46,6 @@ public class ImmobilienController {
     @GetMapping("/{id}")
     public ResponseEntity<Immobilie> getImmobilieById(@PathVariable int id) {
         Immobilie immobilie = immobilienService.getImmobilieById(id);
-
         return new ResponseEntity<>(immobilie, HttpStatus.FOUND);
     }
 
@@ -61,7 +58,6 @@ public class ImmobilienController {
     @PostMapping
     public ResponseEntity<Immobilie> addImmobilie(@Valid @RequestBody Immobilie immobilie) {
         Immobilie hinzugefuegt = immobilienService.addImmobilie(immobilie);
-        
         return new ResponseEntity<>(hinzugefuegt, HttpStatus.CREATED);
     }
 
@@ -71,6 +67,7 @@ public class ImmobilienController {
      * @param id id der zu loeschenden Immobilie
      * @return null Objekt und 200 Status
      */
+    @DeleteMapping("/{id}")
     public ResponseEntity<Immobilie> deleteImmobilie(@PathVariable int id) {
         immobilienService.deleteImmobilie(id);
         return new ResponseEntity<>(null, HttpStatus.OK);
