@@ -30,4 +30,6 @@ cd DocEstateUebung
 cd immobilienService
 ./gradlew bootrun
 
+Die Anwendung laeuft auf port 8080
+
 ####
