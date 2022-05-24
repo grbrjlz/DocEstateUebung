@@ -17,7 +17,7 @@ CREATE DATABASE immobilienService;
 USE immobilienService;
 CREATE USER 'hello'@'localhost' IDENTIFIED BY 'julez';
 FLUSH PRIVILEGES;
-GRANT ALL PRIVILEGES ON `immobilienService` . * TO 'hello'@'localhost';
+"GRANT ALL PRIVILEGES ON '`immobilienService`' . * TO 'hello'@'localhost';
 FLUSH PRIVILEGES;
 exit
 
