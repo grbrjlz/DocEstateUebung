@@ -26,6 +26,10 @@ import axios from "axios"
 
 export default {
     methods: {
+        /**
+         * DELETE Anfrage auf '/immobilie/{id}'
+         * @param {*} immobilie {id,bezeichnung,addresse,flaeche}
+         */
         entferneImmobilie(immobilie) {
             axios.delete('/immobilien/'+immobilie.id).then((res) => {
                 this.immobilien.splice(this.immobilien.indexOf(immobilie,1))
@@ -46,6 +50,10 @@ export default {
         };
     },
     mounted() {
+        /**
+         * GET Anfrage auf '/immobilien' beim Erstellen der Komponente
+         * Ergebnis aller Immobilien in eine Liste
+         */
         axios.get('/immobilien').then((res) =>{
             return res.data
         })

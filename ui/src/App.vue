@@ -2,9 +2,31 @@
   <nav>
     <router-link to="/">Immobilien</router-link> |
     <router-link to="/add">Hinzufuegen</router-link>
+    <button @click="logout()"> logout</button>
   </nav>
   <router-view/>
 </template>
+
+
+<script>
+import axios from "axios" 
+
+export default {
+  methods: {
+    logout() {
+      axios.get('/logout').then((res) => {
+        console.log(res.status)
+        window.location.reload()
+      })
+      .catch((err => {
+          console.log(err)
+      }));
+    }
+  }
+}
+
+</script>
+
 
 <style>
 #app {
